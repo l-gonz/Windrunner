@@ -1,3 +1,4 @@
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,10 +8,12 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 5f; // Jumping force
     private Vector3 movementInput; // Stores input direction
     private Rigidbody rb; // Player Rigidbody
+    private Animator animator;
 
-    private void Awake()
+    private void Start()
     {
         rb = GetComponentInChildren<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void FixedUpdate()
@@ -27,10 +30,17 @@ public class PlayerController : MonoBehaviour
 
         // Process movement input here.
         movementInput = new Vector3(movement.x, 0, movement.y);
+
+        // Animations
+        if (movementInput.magnitude > 0.1f)
+            animator.SetTrigger("Run");
+        else
+            animator.SetTrigger("Stop");
     }
 
     public void OnJump(InputValue value)
     {
+        animator.SetTrigger("Jump");
         if (value.isPressed)
         {
             Debug.Log("Jump action triggered!");
